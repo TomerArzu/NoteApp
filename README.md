@@ -1,2 +1,2 @@
 # NoteApp
-WPF Practice - NOT MVVM
+WPF Practice
