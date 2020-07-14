@@ -19,9 +19,14 @@ namespace NoteApp.View
     /// </summary>
     public partial class NotesView : Window
     {
-        public NoteView()
+        public NotesView()
         {
             InitializeComponent();
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }
