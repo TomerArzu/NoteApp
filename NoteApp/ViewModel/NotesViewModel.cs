@@ -24,7 +24,7 @@ namespace NoteApp.ViewModel
     {
         public ObservableCollection<Notebook> Notebooks { get; set; } //will be bound to listview that displaying the notebooks
 
-        // for the selected Notebook from the list
+        // for the selected NotebookDisplay from the list
         private Notebook selectedNotebook;
 
         public Notebook SelectedNotebook
@@ -70,7 +70,7 @@ namespace NoteApp.ViewModel
         {
             Notebook newNotebook = new Notebook()
             {
-                Name = "New Notebook"
+                Name = "New NotebookDisplay"
             };
             DBHelper.Insert(newNotebook);
         }

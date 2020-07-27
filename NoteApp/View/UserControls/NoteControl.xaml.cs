@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace NoteApp.View.UserControls
 {
     /// <summary>
-    /// Interaction logic for Notebook.xaml
+    /// Interaction logic for NoteControl.xaml
     /// </summary>
-    public partial class Notebook : UserControl
+    public partial class NoteControl : UserControl
     {
-        public Notebook()
+        public NoteControl()
         {
             InitializeComponent();
         }

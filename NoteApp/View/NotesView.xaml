@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NoteApp.View"
+        xmlns:uc="clr-namespace:NoteApp.View.UserControls"
         mc:Ignorable="d"
         xmlns:vm="clr-namespace:NoteApp.ViewModel"
         Title="NoteView" Height="400" Width="600">
@@ -30,10 +31,11 @@
         </Grid>
         <Grid DockPanel.Dock="Left" Width="140">
             <ListView ItemsSource="{Binding Notebooks}"
-                      SelectedItem="{Binding SelectedNotebook, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                      SelectedItem="{Binding SelectedNotebook, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      Background="DarkGreen">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Name}"/>
+                        <uc:NotebookDisplay Notebook="{Binding}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
