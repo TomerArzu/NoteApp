@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NoteApp.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,29 @@ namespace NoteApp.View.UserControls
         public NoteControl()
         {
             InitializeComponent();
+        }
+
+
+
+        public Note Note
+        {
+            get { return (Note)GetValue(NoteProperty); }
+            set { SetValue(NoteProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Note.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty NoteProperty =
+            DependencyProperty.Register("Note", typeof(Note), typeof(NoteControl), new PropertyMetadata(null, SetNoteValues));
+
+        private static void SetNoteValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            NoteControl noteControl = (d as NoteControl);
+            if(noteControl!=null)
+            {
+                noteControl.noteTitle.Text = (e.NewValue as Note).Title;
+                noteControl.noteEdited.Text = (e.NewValue as Note).UpdateTime.ToShortDateString();
+                noteControl.noteContent.Text = (e.NewValue as Note).Title; // TODO: Title temporery
+            }
         }
     }
 }
