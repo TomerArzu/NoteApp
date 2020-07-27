@@ -14,7 +14,7 @@ namespace NoteApp.ViewModel.Helpers
     /// </summary>
     public class DBHelper
     {
-        private static string dbFile = Path.Combine(Environment.CurrentDirectory, "NoteDB.db3"); //path to where do we store the DB file
+        public static string dbFile = Path.Combine(Environment.CurrentDirectory, "NoteDB.db3"); //path to where do we store the DB file
 
         public static bool Insert<T>(T Item)
         {

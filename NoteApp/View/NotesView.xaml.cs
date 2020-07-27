@@ -28,5 +28,16 @@ namespace NoteApp.View
         {
             Application.Current.Shutdown();
         }
+
+        private void contentRichTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            int ammountOfChars = new TextRange(contentRichTextBox.Document.ContentStart, contentRichTextBox.Document.ContentEnd).Text.Length;
+            statusTextBlock.Text = $"Document Length: {ammountOfChars} charecters";
+        }
+
+        private void BoldButton_Click(object sender, RoutedEventArgs e)
+        {
+            contentRichTextBox.Selection.ApplyPropertyValue(Inline.FontWeightProperty, FontWeights.Bold);
+        }
     }
 }

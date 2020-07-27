@@ -1,5 +1,6 @@
 ﻿using NoteApp.Model;
 using NoteApp.ViewModel.Commands;
+using NoteApp.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -58,6 +59,62 @@ namespace NoteApp.ViewModel
         {
             NewNotebookCommand = new NewNotebookCommand(this);
             NewNoteCommand = new NewNoteCommand(this);
+
+            Notebooks = new ObservableCollection<Notebook>();
+            Notes = new ObservableCollection<Note>();
+
+            ReadNotebooks();
+        }
+
+        public void CreateNotebook()
+        {
+            Notebook newNotebook = new Notebook()
+            {
+                Name = "New Notebook"
+            };
+            DBHelper.Insert(newNotebook);
+        }
+
+        public void CreateNote(int notebookId)
+        {
+            Note newNote = new Note()
+            {
+                NotebookId = notebookId,
+                CreatedTime = DateTime.Now,
+                UpdateTime = DateTime.Now,
+                Title = "New Note"
+            };
+
+            DBHelper.Insert(newNote);
+        }
+
+        public void ReadNotebooks()
+        {
+            using (SQLite.SQLiteConnection conn= new SQLite.SQLiteConnection(DBHelper.dbFile))
+            {
+                var notebooks = conn.Table<Notebook>().ToList();
+                Notebooks.Clear();
+                foreach (var notebook in notebooks)
+                {
+                    Notebooks.Add(notebook);
+                }
+            }
+        }
+
+        public void ReadNote()
+        {
+            using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(DBHelper.dbFile))
+            {
+                if (selectedNotebook != null)
+                {
+                    var notes = conn.Table<Note>().Where(n => n.NotebookId == SelectedNotebook.Id).ToList();
+                    Notes.Clear();
+                    foreach (var note in notes)
+                    {
+                        Notes.Add(note);
+                    }
+                }
+            }
         }
 
     }
