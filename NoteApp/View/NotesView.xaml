@@ -42,10 +42,11 @@
         </Grid>
 
         <Grid DockPanel.Dock="Left" Width="140">
-            <ListView ItemsSource="{Binding Notes}">
+            <ListView ItemsSource="{Binding Notes}"
+                      SelectedItem="{Binding SelectedNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Title}"/>
+                        <uc:NoteControl Note="{Binding}"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

@@ -45,7 +45,7 @@ namespace NoteApp.View.UserControls
             {
                 noteControl.noteTitle.Text = (e.NewValue as Note).Title;
                 noteControl.noteEdited.Text = (e.NewValue as Note).UpdateTime.ToShortDateString();
-                noteControl.noteContent.Text = (e.NewValue as Note).Title; // TODO: Title temporery
+                noteControl.noteContent.Text = (e.NewValue as Note).Title; // TODO: Title property is temporary - need to add the rich text block content to here
             }
         }
     }

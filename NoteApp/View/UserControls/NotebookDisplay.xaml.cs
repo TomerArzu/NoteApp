@@ -38,9 +38,9 @@ namespace NoteApp.View.UserControls
 
         // Using a DependencyProperty as the backing store for Notebook.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty NotebookProperty =
-            DependencyProperty.Register("Notebook", typeof(Notebook), typeof(NotebookDisplay), new PropertyMetadata(null, SetValues));
+            DependencyProperty.Register("Notebook", typeof(Notebook), typeof(NotebookDisplay), new PropertyMetadata(null, SetNotebookValues));
 
-        private static void SetValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void SetNotebookValues(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             NotebookDisplay notebookDisplay = d as NotebookDisplay;
             if(notebookDisplay!=null)
