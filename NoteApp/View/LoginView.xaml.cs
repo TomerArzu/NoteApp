@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NoteApp.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,27 @@ namespace NoteApp.View
         public LoginView()
         {
             InitializeComponent();
+
+            LoginViewModel vm = new LoginViewModel();
+            GridContainer.DataContext = vm;
+            vm.HasLoggedin += Vm_HasLoggedin;
+        }
+
+        private void Vm_HasLoggedin(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void haveAccountButton_Click(object sender, RoutedEventArgs e)
+        {
+            RegisterSP.Visibility = Visibility.Collapsed;
+            LoginSP.Visibility = Visibility.Visible;
+        }
+
+        private void noAccountButton_Click(object sender, RoutedEventArgs e)
+        {
+            RegisterSP.Visibility = Visibility.Visible;
+            LoginSP.Visibility = Visibility.Collapsed;
         }
     }
 }

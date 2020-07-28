@@ -4,6 +4,7 @@ using NoteApp.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,9 +21,19 @@ namespace NoteApp.ViewModel
     /// create new note
     /// (and more...)
     /// </summary>
-    public class NotesViewModel
+    public class NotesViewModel : BaseViewModel
     {
         public ObservableCollection<Notebook> Notebooks { get; set; } //will be bound to listview that displaying the notebooks
+
+        private bool isEdited;
+
+        public bool IsEdited
+        {
+            get { return isEdited; }
+            set { isEdited = value; }
+        }
+
+
 
         // for the selected NotebookDisplay from the list
         private Notebook selectedNotebook;
@@ -56,10 +67,17 @@ namespace NoteApp.ViewModel
 
         public NewNoteCommand NewNoteCommand { get; set; }
 
+        public BeginEditCommand beginEditCommand { get; set; }
+        public HasEditedCommand hasEditedCommand { get; set; }
+
         public NotesViewModel()
         {
+            IsEdited = false;
+
             NewNotebookCommand = new NewNotebookCommand(this);
             NewNoteCommand = new NewNoteCommand(this);
+            beginEditCommand = new BeginEditCommand(this);
+            hasEditedCommand = new HasEditedCommand(this);
 
             Notebooks = new ObservableCollection<Notebook>();
             Notes = new ObservableCollection<Note>();
@@ -72,7 +90,8 @@ namespace NoteApp.ViewModel
         {
             Notebook newNotebook = new Notebook()
             {
-                Name = "New NotebookDisplay"
+                Name = "New NotebookDisplay",
+                UserId = int.Parse(App.UserId)
             };
             DBHelper.Insert(newNotebook);
             ReadNotebooks();
@@ -86,6 +105,7 @@ namespace NoteApp.ViewModel
                 CreatedTime = DateTime.Now,
                 UpdateTime = DateTime.Now,
                 Title = "New Note"
+                
             };
 
             DBHelper.Insert(newNote);
@@ -96,6 +116,7 @@ namespace NoteApp.ViewModel
         {
             using (SQLite.SQLiteConnection conn= new SQLite.SQLiteConnection(DBHelper.dbFile))
             {
+                conn.CreateTable<Notebook>();
                 var notebooks = conn.Table<Notebook>().ToList();
                 Notebooks.Clear();
                 foreach (var notebook in notebooks)
@@ -111,6 +132,7 @@ namespace NoteApp.ViewModel
             {
                 if (selectedNotebook != null)
                 {
+                    conn.CreateTable<Note>();
                     var notes = conn.Table<Note>().Where(n => n.NotebookId == SelectedNotebook.Id).ToList();
                     Notes.Clear();
                     foreach (var note in notes)
@@ -121,5 +143,19 @@ namespace NoteApp.ViewModel
             }
         }
 
+        public void StartEditing()
+        {
+            IsEdited = true;
+        }
+
+        public void HasRenamed(Notebook notebook)
+        {
+            if(notebook!=null)
+            {
+                DBHelper.Update(notebook);
+                IsEdited = false;
+                ReadNotebooks();
+            }
+        }
     }
 }

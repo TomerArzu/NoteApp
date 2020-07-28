@@ -50,6 +50,16 @@ namespace NoteApp.View
             FontSizeCB.ItemsSource = fontsSizes;
         }
 
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+            if(string.IsNullOrEmpty(App.UserId))
+            {
+                LoginView loginWindow = new LoginView();
+                loginWindow.ShowDialog(); //return only if this window is closed
+            }
+        }
+
         private void Recognizer_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
             string recognizedText = e.Result.Text;
