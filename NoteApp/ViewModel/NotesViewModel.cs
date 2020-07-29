@@ -30,7 +30,11 @@ namespace NoteApp.ViewModel
         public bool IsEdited
         {
             get { return isEdited; }
-            set { isEdited = value; }
+            set 
+            { 
+                isEdited = value;
+                OnPropertyChanged();
+            }
         }
 
 

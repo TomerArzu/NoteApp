@@ -40,15 +40,15 @@
                     <DataTemplate>
                         <Grid>
                             <uc:NotebookDisplay Notebook="{Binding}"/>
-                            <TextBlock Text="{Binding Name, Mode=TwoWay}"
-                                       Visibility="{Binding Source={StaticResource NotesVM}, Path=IsEdited, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <TextBox Text="{Binding Name, Mode=TwoWay}"
+                                     Visibility="{Binding Source={StaticResource NotesVM}, Path=IsEdited, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="LostFocus">
                                         <i:InvokeCommandAction Command="{Binding Source={StaticResource NotesVM}, Path=hasEditedCommand}"
                                                                CommandParameter="{Binding}"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
-                            </TextBlock>
+                            </TextBox>
                             <Grid.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="Rename"
