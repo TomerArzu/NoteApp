@@ -50,7 +50,7 @@
                             <Grid>
                                 <uc:NotebookDisplay Notebook="{Binding}"/>
                                 <TextBox Text="{Binding Name, Mode=TwoWay}"
-                                     Visibility="{Binding Source={StaticResource NotesVM}, Path=IsEdited, Converter={StaticResource BoolToVisibilityConverter}}"
+                                     Visibility="{Binding Source={StaticResource NotesVM}, Path=IsEditedNotebook, Converter={StaticResource BoolToVisibilityConverter}}"
                                      Width="Auto" Height="Auto">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="LostFocus">
@@ -61,9 +61,9 @@
                                 </TextBox>
                                 <Grid.ContextMenu>
                                     <ContextMenu>
-                                        <MenuItem Header="Rename"
+                                        <MenuItem Header="Rename Notebook"
                                               Command="{Binding Source={StaticResource NotesVM}, Path=beginEditCommand}"/>
-                                        <MenuItem Header="Delete"
+                                        <MenuItem Header="Delete Notebook"
                                                   Command="{Binding Source={StaticResource NotesVM}, Path=deleteNotebookCommand}"
                                                   CommandParameter="{Binding}"/>
                                     </ContextMenu>
@@ -82,7 +82,17 @@
                       Background="#fce2ce">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <uc:NoteControl Note="{Binding}"/>
+                            <Grid>
+                                <uc:NoteControl Note="{Binding}"/>
+                                <Grid.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Rename Note"/>
+                                        <MenuItem Header="Delete Note"
+                                                  Command="{Binding Source={StaticResource NotesVM}, Path=deleteNoteCommand}"
+                                                  CommandParameter="{Binding}"/>
+                                    </ContextMenu>
+                                </Grid.ContextMenu>
+                            </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>

@@ -25,14 +25,16 @@ namespace NoteApp.ViewModel
     {
         public ObservableCollection<Notebook> Notebooks { get; set; } //will be bound to listview that displaying the notebooks
 
-        private bool isEdited;
 
-        public bool IsEdited
+
+        private bool isEditedNotebook;
+
+        public bool IsEditedNotebook
         {
-            get { return isEdited; }
+            get { return isEditedNotebook; }
             set 
             { 
-                isEdited = value;
+                isEditedNotebook = value;
                 OnPropertyChanged();
             }
         }
@@ -67,22 +69,22 @@ namespace NoteApp.ViewModel
         }
 
         public NewNotebookCommand NewNotebookCommand { get; set; }
-
         public NewNoteCommand NewNoteCommand { get; set; }
-
         public BeginEditCommand beginEditCommand { get; set; }
         public HasEditedCommand hasEditedCommand { get; set; }
         public DeleteNotebookCommand deleteNotebookCommand { get; set; }
+        public DeleteNoteCommand deleteNoteCommand { get; set; }
 
         public NotesViewModel()
         {
-            IsEdited = false;
+            IsEditedNotebook = false;
 
             NewNotebookCommand = new NewNotebookCommand(this);
             NewNoteCommand = new NewNoteCommand(this);
             beginEditCommand = new BeginEditCommand(this);
             hasEditedCommand = new HasEditedCommand(this);
             deleteNotebookCommand = new DeleteNotebookCommand(this);
+            deleteNoteCommand = new DeleteNoteCommand(this);
 
             Notebooks = new ObservableCollection<Notebook>();
             Notes = new ObservableCollection<Note>();
@@ -150,7 +152,7 @@ namespace NoteApp.ViewModel
 
         public void StartEditing()
         {
-            IsEdited = true;
+            IsEditedNotebook = true;
         }
 
         public void HasRenamed(Notebook notebook)
@@ -158,7 +160,7 @@ namespace NoteApp.ViewModel
             if(notebook!=null)
             {
                 DBHelper.Update(notebook);
-                IsEdited = false;
+                IsEditedNotebook = false;
                 ReadNotebooks();
             }
         }
@@ -183,6 +185,12 @@ namespace NoteApp.ViewModel
                 }
                 ReadNote();
             }
+        }
+
+        public void DeleteNotebook(Note note)
+        {
+            DBHelper.Delete<Note>(note);
+            ReadNote();
         }
     }
 }
