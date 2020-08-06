@@ -56,15 +56,18 @@ namespace NoteApp.ViewModel
 
         public ObservableCollection<Note> Notes { get; set; }
 
-        private Notebook selectedNote;
+        public event EventHandler selectedNoteChanged;
 
-        public Notebook SelectedNote
+        private Note selectedNote;
+
+        public Note SelectedNote
         {
             get { return selectedNote; }
             set
             {
                 selectedNote = value;
                 //TODO: show selected note
+                selectedNoteChanged(this, new EventArgs());
             }
         }
 
@@ -191,6 +194,11 @@ namespace NoteApp.ViewModel
         {
             DBHelper.Delete<Note>(note);
             ReadNote();
+        }
+
+        public void UpdatedSelectedNote()
+        {
+            DBHelper.Update(SelectedNote);
         }
     }
 }

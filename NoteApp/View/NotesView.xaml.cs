@@ -1,5 +1,7 @@
-﻿using System;
+﻿using NoteApp.ViewModel;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Speech.Recognition;
 using System.Text;
@@ -23,9 +25,14 @@ namespace NoteApp.View
     public partial class NotesView : Window
     {
         SpeechRecognitionEngine recognizer;
+        NotesViewModel viewModel;
         public NotesView()
         {
             InitializeComponent();
+            viewModel = _mainContainer.DataContext as NotesViewModel;
+            //viewModel = new NotesViewModel();
+            //_mainContainer.DataContext = viewModel;
+            viewModel.selectedNoteChanged += ViewModel_selectedNoteChanged;
 
             var currentCulture = (from r
                                  in SpeechRecognitionEngine.InstalledRecognizers()
@@ -48,6 +55,34 @@ namespace NoteApp.View
             FontFamilyCB.ItemsSource = fontFamilies;
             List<double> fontsSizes = new List<double>() { 8, 9, 10, 11, 12, 14, 16, 18, 48, 62 };
             FontSizeCB.ItemsSource = fontsSizes;
+        }
+
+        private void ViewModel_selectedNoteChanged(object sender, EventArgs e)
+        {
+            if (viewModel.SelectedNote != null && !string.IsNullOrEmpty(viewModel.SelectedNote.FileLocation))
+            {
+                FileStream fileStream = new FileStream(viewModel.SelectedNote.FileLocation, FileMode.Open); //opens the file in the file location
+                TextRange range = new TextRange(contentRichTextBox.Document.ContentStart, contentRichTextBox.Document.ContentEnd); //Define two points that the text is going to be set on (like pointer to the start and the end of the text place holder)
+                range.Load(fileStream, DataFormats.Rtf); // load the text in the file in the format of Rich Text Format (RTF)
+                fileStream.Close();
+            }
+            else
+            {
+                contentRichTextBox.Document.Blocks.Clear();
+            }
+        }
+        private void saveNoteContentButton_Click(object sender, RoutedEventArgs e)
+        {
+            string rtfFile = System.IO.Path.Combine(Environment.CurrentDirectory, $"{viewModel.SelectedNote.Id}.rtf"); // saves the ~path~ to the text in the rich text box in the current directory
+            viewModel.SelectedNote.FileLocation = rtfFile;
+
+            FileStream fileStream = new FileStream(rtfFile, FileMode.Create); // if the file exist- override it, else create new one
+            TextRange range = new TextRange(contentRichTextBox.Document.ContentStart, contentRichTextBox.Document.ContentEnd); //Select the content in the rich text box
+            range.Save(fileStream, DataFormats.Rtf); // save the selected content as RTF file
+
+            viewModel.UpdatedSelectedNote(); //we need to update because we change the FileLocation propery of the note
+
+            statusTextBlock.Text = $"{viewModel.SelectedNote.Title} Saved!      File Location: {viewModel.SelectedNote.FileLocation}";
         }
 
         protected override void OnActivated(EventArgs e)
