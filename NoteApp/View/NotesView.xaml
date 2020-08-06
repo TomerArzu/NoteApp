@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         xmlns:vm="clr-namespace:NoteApp.ViewModel"
         xmlns:conv="clr-namespace:NoteApp.ViewModel.Converters"
-        Title="NoteView" Height="400" Width="600">
+        Title="NoteView" Height="700" Width="900">
     <Window.Resources>
         <vm:NotesViewModel x:Key="NotesVM"/>
         <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
@@ -21,7 +21,7 @@
                            Command="{Binding NewNotebookCommand}"/>
                 <MenuItem Header="New Note"
                           Command="{Binding NewNoteCommand}"
-                          CommandParameter="{Binding SelectedNotebook}"/>
+                          CommandParameter="{Binding Source={StaticResource NotesVM}, Path=NotesVM.SelectedNotebook, Mode=TwoWay}"/>
                 <Separator/>
                 <MenuItem Header="Exit" 
                           Click="MenuItem_Click" />
@@ -32,80 +32,106 @@
                 <TextBlock x:Name="statusTextBlock"/>
             </StatusBar>
         </Grid>
-        <Grid DockPanel.Dock="Left" Width="140">
-            <ListView ItemsSource="{Binding Notebooks}"
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" MinWidth="5" MaxWidth="270"/>
+                <ColumnDefinition Width="Auto"/> <!--splitter-->
+                <ColumnDefinition Width="Auto" MinWidth="5"  MaxWidth="270"/>
+                <ColumnDefinition Width="Auto"/> <!--splitter-->
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid DockPanel.Dock="Left" Width="auto" Grid.Column="0">
+                <ListView ItemsSource="{Binding Notebooks}"
                       SelectedItem="{Binding SelectedNotebook, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                      Background="DarkGreen">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <uc:NotebookDisplay Notebook="{Binding}"/>
-                            <TextBox Text="{Binding Name, Mode=TwoWay}"
-                                     Visibility="{Binding Source={StaticResource NotesVM}, Path=IsEdited, Converter={StaticResource BoolToVisibilityConverter}}">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="LostFocus">
-                                        <i:InvokeCommandAction Command="{Binding Source={StaticResource NotesVM}, Path=hasEditedCommand}"
+                      Background="#848ccf">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <uc:NotebookDisplay Notebook="{Binding}"/>
+                                <TextBox Text="{Binding Name, Mode=TwoWay}"
+                                     Visibility="{Binding Source={StaticResource NotesVM}, Path=IsEdited, Converter={StaticResource BoolToVisibilityConverter}}"
+                                     Width="Auto" Height="Auto">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="LostFocus">
+                                            <i:InvokeCommandAction Command="{Binding Source={StaticResource NotesVM}, Path=hasEditedCommand}"
                                                                CommandParameter="{Binding}"/>
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                            </TextBox>
-                            <Grid.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Rename"
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </TextBox>
+                                <Grid.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Rename"
                                               Command="{Binding Source={StaticResource NotesVM}, Path=beginEditCommand}"/>
-                                </ContextMenu>
-                            </Grid.ContextMenu>
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </Grid>
+                                        <MenuItem Header="Delete"
+                                                  Command="{Binding Source={StaticResource NotesVM}, Path=deleteNotebookCommand}"
+                                                  CommandParameter="{Binding}"/>
+                                    </ContextMenu>
+                                </Grid.ContextMenu>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+            
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
+            
+            <Grid DockPanel.Dock="Left" Grid.Column="2">
+                <ListView ItemsSource="{Binding Notes}"
+                      SelectedItem="{Binding SelectedNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      Background="#fce2ce">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <uc:NoteControl Note="{Binding}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+            
+            <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch"/>
 
-        <Grid DockPanel.Dock="Left" Width="140">
-            <ListView ItemsSource="{Binding Notes}"
-                      SelectedItem="{Binding SelectedNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <uc:NoteControl Note="{Binding}"/>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </Grid>
+            <Grid Grid.Column="4" x:Name="TextAndToolBarGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-        <Grid DockPanel.Dock="Top">
-            <ToolBarTray>
-                <ToolBar>
-                    <ToggleButton x:Name="speechButton"
+                <Grid Grid.Row="0" x:Name="ToolBarGrid">
+                    <ToolBarTray>
+                        <ToolBar>
+                            <ToggleButton x:Name="speechButton"
                             Content="Speech"
                             Click="speechButton_Click"/>
-                    <ToggleButton x:Name="BoldButton"
+                            <ToggleButton x:Name="BoldButton"
                             Click="BoldButton_Click">
-                        <TextBlock Text="B" FontWeight="Bold"/>
-                    </ToggleButton>
-                    <ToggleButton x:Name="ItalicButton"
+                                <TextBlock Text="B" FontWeight="Bold"/>
+                            </ToggleButton>
+                            <ToggleButton x:Name="ItalicButton"
                             Click="ItalicButton_Click">
-                        <TextBlock Text="I" FontStyle="Italic"/>
-                    </ToggleButton>
-                    <ToggleButton x:Name="UnderlineButton"
+                                <TextBlock Text="I" FontStyle="Italic"/>
+                            </ToggleButton>
+                            <ToggleButton x:Name="UnderlineButton"
                             Click="UnderlineButton_Click">
-                        <TextBlock Text="U" TextDecorations="Underline"/>
-                    </ToggleButton>
-                    <ComboBox Name="FontFamilyCB"
+                                <TextBlock Text="U" TextDecorations="Underline"/>
+                            </ToggleButton>
+                            <ComboBox Name="FontFamilyCB"
                               Width="100"
                               SelectionChanged="FontFamilyCB_SelectionChanged"/>
-                    <ComboBox Name="FontSizeCB"
+                            <ComboBox Name="FontSizeCB"
                               Width="50"
                               IsEditable="True"
                               TextBoxBase.TextChanged="FontSizeCB_TextChanged"/>
-                </ToolBar>
-            </ToolBarTray>
-        </Grid>
+                        </ToolBar>
+                    </ToolBarTray>
+                </Grid>
 
-        <Grid>
-            <RichTextBox x:Name="contentRichTextBox"
+                <Grid x:Name="RichTextGrid" Grid.Row="1">
+                    <RichTextBox x:Name="contentRichTextBox"
                          SelectionChanged="contentRichTextBox_SelectionChanged"
                          TextChanged="contentRichTextBox_TextChanged"/>
-        </Grid>
+                </Grid>
+            </Grid>
 
+        </Grid>
     </DockPanel>
 </Window>

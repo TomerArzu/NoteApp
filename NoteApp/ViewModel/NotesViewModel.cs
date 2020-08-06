@@ -48,7 +48,6 @@ namespace NoteApp.ViewModel
             set
             {
                 selectedNotebook = value;
-                //TODO: get notes when notebook selected
                 ReadNote();
             }
         }
@@ -73,6 +72,7 @@ namespace NoteApp.ViewModel
 
         public BeginEditCommand beginEditCommand { get; set; }
         public HasEditedCommand hasEditedCommand { get; set; }
+        public DeleteNotebookCommand deleteNotebookCommand { get; set; }
 
         public NotesViewModel()
         {
@@ -82,6 +82,7 @@ namespace NoteApp.ViewModel
             NewNoteCommand = new NewNoteCommand(this);
             beginEditCommand = new BeginEditCommand(this);
             hasEditedCommand = new HasEditedCommand(this);
+            deleteNotebookCommand = new DeleteNotebookCommand(this);
 
             Notebooks = new ObservableCollection<Notebook>();
             Notes = new ObservableCollection<Note>();
@@ -159,6 +160,28 @@ namespace NoteApp.ViewModel
                 DBHelper.Update(notebook);
                 IsEdited = false;
                 ReadNotebooks();
+            }
+        }
+
+        public void DeleteNotebook(Notebook notebook)
+        {
+            if(notebook!=null)
+            {
+                DeleteNotesOfSelectedNotebook();
+                DBHelper.Delete<Notebook>(notebook);
+                ReadNotebooks();
+            }
+        }
+
+        private void DeleteNotesOfSelectedNotebook()
+        {
+            if (Notes != null)
+            {
+                foreach (Note note in Notes)
+                {
+                    DBHelper.Delete<Note>(note);
+                }
+                ReadNote();
             }
         }
     }
